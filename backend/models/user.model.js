@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    email:{
+      type:String,
+      required:true,
+      unique:true
+    },
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -46,6 +51,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    likedPosts:[{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'Post',
+      default:[]
+    }
+    ]
   },
   { timestamps: true }
 );
