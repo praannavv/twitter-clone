@@ -15,7 +15,7 @@ export const createPost = async (req, res) => {
 
     if (img) {
       const uploadedResponse = await cloudinary.uploader.upload(img);
-      img = uploadedResponse.secure.url;
+      img = uploadedResponse.secure_url;
     }
     const newPost = new Post({
       user: userId,
@@ -202,7 +202,7 @@ export const getUserPost = async (req, res) => {
         path: "comments.user",
         select: "-password",
       });
-      return res.status(200).json(posts)
+    return res.status(200).json(posts);
   } catch (error) {
     console.log("Error in getUserPost ", error.message);
     return res.status(400).json({ message: "Internal server error" });

@@ -14,11 +14,12 @@ cloudinary.config({
   api_secret: conf.CLOUDINARY_API_SECRET, // Click 'View Credentials' below to copy your API secret
 });
 
+
 const app = express();
 const PORT = conf.PORT || 8000;
 
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({limit:"5mb"}));
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
