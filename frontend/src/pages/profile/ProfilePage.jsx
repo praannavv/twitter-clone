@@ -9,15 +9,10 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { IoCalendarOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatMemberSinceDate } from "../../utils/db/date";
 import useFollow from "../../hooks/useFollow";
-import toast from "react-hot-toast";
+import useUpdateUserProfile from "../../hooks/useUpdateUserProfile";
 
 const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState(null);
@@ -26,7 +21,7 @@ const ProfilePage = () => {
 
   const coverImgRef = useRef(null);
   const profileImgRef = useRef(null);
-
+  const { isUpdatingProfile, updateProfile } = useUpdateUserProfile();
   const { username } = useParams();
   const queryClient = useQueryClient();
   const { follow, isPending } = useFollow();
@@ -50,38 +45,6 @@ const ProfilePage = () => {
       } catch (error) {
         throw new Error(error);
       }
-    },
-  });
-
-  const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
-    mutationFn: async (data) => {
-      try {
-        const res = await fetch("/api/users/update", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            coverImg,
-            profileImg,
-          }),
-        });
-        const result = await res.json();
-        if (!res.ok) {
-          throw new Error(result.error || "Something went wrong");
-        }
-        return result;
-      } catch (error) {
-        throw new Error(error.message);
-      }
-    },
-    onSuccess: () => {
-      toast.success("Profile updated successfully");
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
-      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
-    },
-    onError: () => {
-      toast.error("something went wrong");
     },
   });
 
@@ -190,7 +153,11 @@ const ProfilePage = () => {
                 {(coverImg || profileImg) && (
                   <button
                     className="btn btn-primary rounded-full btn-sm text-white px-4 ml-2"
-                    onClick={() => updateProfile()}
+                    onClick={async () => {
+                      await updateProfile({ coverImg, profileImg });
+                      setProfileImg(null);
+                      setCoverImg(null);
+                    }}
                   >
                     {isUpdatingProfile ? "Updating..." : "Update"}
                   </button>
@@ -216,8 +183,9 @@ const ProfilePage = () => {
                           target="_blank"
                           rel="noreferrer"
                           className="text-sm text-blue-500 hover:underline"
-                        
-                        >{user.link}</a>
+                        >
+                          {user.link}
+                        </a>
                       </>
                     </div>
                   )}
