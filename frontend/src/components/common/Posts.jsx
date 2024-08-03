@@ -9,10 +9,12 @@ const Posts = ({ feedType, username, userId }) => {
       case "forYou":
         return "/api/posts/all";
       case "following":
+        
         return "api/posts/following";
       case "posts":
         return `/api/posts/user/${username}`;
       case "likes":
+      
         return `/api/posts/likes/${userId}`;
       default:
         return "/api/posts/all";
@@ -31,8 +33,9 @@ const Posts = ({ feedType, username, userId }) => {
     queryFn: async () => {
       try {
         const res = await fetch(POST_ENDPOINT);
-        const data = await res.json();
 
+        const data = await res.json();
+     
         if (!res.ok) {
           throw new Error(data.error || "Something went wrong");
         }

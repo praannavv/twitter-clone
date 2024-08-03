@@ -51,7 +51,7 @@ export const signup = async (req, res) => {
       res.status(400).json({error:"Invalid user data"})
     }
   } catch (err) {
-    console.log("error is signup controller", err.message)
+    console.log("Error is signup controller", err.message)
     res.status(500).json({error : "internal server error"})
 
 

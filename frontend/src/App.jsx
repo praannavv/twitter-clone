@@ -20,7 +20,6 @@ function App() {
         if (!res.ok) {
           throw new Error(data.error);
         }
-        console.log(data);
         return data;
       } catch (error) {
         throw new Error(error);

@@ -2,33 +2,39 @@ import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
 import { v2 as cloudinary } from "cloudinary";
 import Notification from "../models/notification.model.js";
+
 export const createPost = async (req, res) => {
-  try {
-    const { text } = req.body;
-    let { img } = req.body;
-    const userId = req.user._id.toString();
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    if (!text && !img) {
-      return res.status(400).json({ error: "Post must have text or image" });
-    }
+	try {
+		const { text } = req.body;
+		let { img } = req.body;
+  
 
-    if (img) {
-      const uploadedResponse = await cloudinary.uploader.upload(img);
-      img = uploadedResponse.secure_url;
-    }
-    const newPost = new Post({
-      user: userId,
-      text,
-      img,
-    });
+		const userId = req.user._id.toString();
 
-    await newPost.save();
-    res.status(201).json(newPost);
-  } catch (error) {
-    console.log("Error in createPost ", error.message);
-    res.status(500).json({ error: "Internal server error" });
-  }
+		const user = await User.findById(userId);
+		if (!user) return res.status(404).json({ message: "User not found" });
+
+		if (!text && !img) {
+			return res.status(400).json({ error: "Post must have text or image" });
+		}
+
+		if (img) {
+			const uploadedResponse = await cloudinary.uploader.upload(img);
+			img = uploadedResponse.secure_url;
+		}
+
+		const newPost = new Post({
+			user: userId,
+			text,
+			img,
+		});
+
+		await newPost.save();
+		res.status(201).json(newPost);
+	} catch (error) {
+		res.status(500).json({ error: "Internal server error" });
+		console.log("Error in createPost controller: ", error);
+	}
 };
 
 export const deletePost = async (req, res) => {
@@ -49,7 +55,7 @@ export const deletePost = async (req, res) => {
     await Post.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
-    console.log("error in deletePost controller", error);
+    console.log("Error in deletePost controller", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -64,7 +70,7 @@ export const commentOnPost = async (req, res) => {
       return res.status(400).json({ error: "Text field is required" });
     }
 
-    console.log(postId);
+  
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ error: "post not found" });
@@ -141,25 +147,27 @@ export const getAllPost = async (req, res) => {
 };
 
 export const getLikedPosts = async (req, res) => {
-  const userId = req.params.id;
-  try {
-    const user = await User.findById(userId);
-    if (!user) return res.status(400).json({ error: "User not found" });
+	const userId = req.params.id;
 
-    const likedPosts = await Post.find({ _id: { $in: user.likedPosts } })
-      .populate({
-        path: "user",
-        select: "-password",
-      })
-      .populate({
-        path: "comments.user",
-        select: "-password",
-      });
-    return res.status(200).json(likedPosts);
-  } catch (error) {
-    console.log("Error in getLikedPost controller", error.message);
-    return res.status(400).json({ error: "Internal Server error" });
-  }
+	try {
+		const user = await User.findById(userId);
+		if (!user) return res.status(404).json({ error: "User not found" });
+
+		const likedPosts = await Post.find({ _id: { $in: user.likedPosts } })
+			.populate({
+				path: "user",
+				select: "-password",
+			})
+			.populate({
+				path: "comments.user",
+				select: "-password",
+			});
+
+		res.status(200).json(likedPosts);
+	} catch (error) {
+		console.log("Error in getLikedPosts controller: ", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
 };
 
 export const getFollowingPost = async (req, res) => {

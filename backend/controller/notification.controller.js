@@ -13,7 +13,7 @@ export const getNotifications = async (req, res) => {
 
     res.status(200).json(notification)
   } catch (error) {
-    console.log("error in getNotification function",error.message)
+    console.log("Error in getNotification function",error.message)
     return res.status(500).json({error:"Internal Server Error"})
   }
 };
