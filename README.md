@@ -1,16 +1,31 @@
+Tech Stack
+Frontend: React.js
+Backend: Node.js, Express
+Database: MongoDB
+Styling: Tailwind CSS
+Authentication: JSON Web Tokens (JWT)
+Data Fetching & Caching: React Query
+Image Management: Cloudinary
+Core Features
+User Management
 
-⚛️ Tech Stack: React.js, MongoDB, Node.js, Express, Tailwind
-🔐 Authentication with JSONWEBTOKENS (JWT)
-🔥 React Query for Data Fetching, Caching etc.
 👥 Suggested Users to Follow
-✍️ Creating Posts
-🗑️ Deleting Posts
-💬 Commenting on Posts
-❤️ Liking Posts
-🔒 Delete Posts (if you are the owner)
-📝 Edit Profile Info
-🖼️ Edit Cover Image and Profile Image
-📷 Image Uploads using Cloudinary
-🔔 Send Notifications
-🌐 Deployment
-⏳ And much more!
+📝 Edit Profile Information
+🖼️ Edit Cover Image and Profile Picture
+Post Management
+
+✍️ Create Posts
+🗑️ Delete Posts (if you are the owner)
+💬 Comment on Posts
+❤️ Like Posts
+🔒 Edit and Delete Posts (if you are the owner)
+Notifications
+
+🔔 Send Notifications to Users
+Image Handling
+
+📷 Upload Images using Cloudinary
+Deployment
+
+🌐 Deploy your application for production
+And much more!
